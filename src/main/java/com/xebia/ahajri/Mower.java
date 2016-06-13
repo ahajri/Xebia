@@ -1,8 +1,5 @@
 package com.xebia.ahajri;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.xebia.ahajri.exception.MowException;
 
 /**
@@ -16,7 +13,6 @@ import com.xebia.ahajri.exception.MowException;
 public class Mower {
 
 	private Position position;
-	private List<Position> forbiddenPositions = new ArrayList<>();
 	private int xMax;
 	private int yMax;
 	private String commandLine;
@@ -29,62 +25,40 @@ public class Mower {
 		this.commandLine = commandLine;
 	}
 
-	public void addForbidden(Position p) {
-		assert p != null;
-		this.forbiddenPositions.add(p);
-	}
-
-	public void addForbiddens(List<Position> p) {
-		assert p != null;
-		this.forbiddenPositions.addAll(p);
-	}
-
 	public Position mow() throws MowException {
 		assert commandLine != null;
 		String[] commands = commandLine.split("(?!^)");
 		for (String command : commands) {
-			switch (command) {
-			case "D":
+
+			if (command.equalsIgnoreCase("D")) {
 				Position newPositionD = new Position(position.getX(), position.getY(),
 						nextCap(command, position.getCap()));
-				position = newPositionD;
-				break;
-			case "G":
+				setPosition(newPositionD);
+			}
+			if (command.equalsIgnoreCase("G")) {
 				Position newPositionG = new Position(position.getX(), position.getY(),
 						nextCap(command, position.getCap()));
-				position = newPositionG;
-				break;
-			case "A":
+				setPosition(newPositionG);
+			}
+			if (command.equalsIgnoreCase("A")) {
 				int nextX = nextX(position.getX(), position.getCap());
 				int nextY = nextY(position.getY(), position.getCap());
 				String cap = position.getCap();
 				Position newPositionA = new Position(nextX, nextY, cap);
-				this.position=newPositionA;
-				break;
-
-			default:
-				break;
+				setPosition(newPositionA);
 			}
+
 		}
 		return position;
 	}
 
 	private int nextY(int y, String cap) {
 		int nextY = y;
-		switch (cap) {
-		case "N":
-			nextY = y + 1;
-			break;
-		case "E":
-			break;
-		case "S":
-			nextY = y - 1;
-			break;
-		case "W":
-			break;
 
-		default:
-			break;
+		if (cap.equalsIgnoreCase("N")) {
+			nextY = y + 1;
+		} else if (cap.equalsIgnoreCase("S")) {
+			nextY = y - 1;
 		}
 		if (nextY > yMax) {
 			nextY = yMax;
@@ -97,22 +71,10 @@ public class Mower {
 
 	private int nextX(int x, String cap) {
 		int nextX = x;
-		switch (cap) {
-		case "N":
-
-			break;
-		case "E":
+		if (cap.equalsIgnoreCase("E")) {
 			nextX = x + 1;
-			break;
-		case "S":
-
-			break;
-		case "W":
+		} else if (cap.equalsIgnoreCase("W")) {
 			nextX = x - 1;
-			break;
-
-		default:
-			break;
 		}
 		if (nextX > xMax) {
 			nextX = xMax;
@@ -127,41 +89,33 @@ public class Mower {
 
 		String newCap = null;
 		if (command.equalsIgnoreCase("D")) {
-			switch (cap) {
-			case "N":
+			if (cap.equalsIgnoreCase("N")) {
 				newCap = "E";
-				break;
-			case "E":
-				newCap = "S";
-				break;
-			case "S":
-				newCap = "W";
-				break;
-			case "W":
-				newCap = "N";
-				break;
-
-			default:
-				break;
 			}
+			if (cap.equalsIgnoreCase("E")) {
+				newCap = "S";
+			}
+			if (cap.equalsIgnoreCase("S")) {
+				newCap = "W";
+			}
+			if (cap.equalsIgnoreCase("W")) {
+				newCap = "N";
+			}
+
 		} else if (command.equalsIgnoreCase("G")) {
-			switch (cap) {
-			case "N":
+			if (cap.equalsIgnoreCase("N")) {
 				newCap = "W";
-				break;
-			case "E":
-				newCap = "N";
-				break;
-			case "S":
-				newCap = "E";
-				break;
-			case "W":
-				newCap = "S";
-				break;
-
-			default:
-				break;
 			}
+			if (cap.equalsIgnoreCase("E")) {
+				newCap = "N";
+			}
+			if (cap.equalsIgnoreCase("S")) {
+				newCap = "E";
+			}
+			if (cap.equalsIgnoreCase("W")) {
+				newCap = "S";
+			}
+
 		}
 		return newCap;
 	}
@@ -170,10 +124,14 @@ public class Mower {
 		return position;
 	}
 
+	public void setPosition(Position position) {
+		this.position = position;
+	}
+
 	@Override
 	public String toString() {
-		return "Mower [position=" + position + ", forbiddenPositions=" + forbiddenPositions + ", xMax=" + xMax
-				+ ", yMax=" + yMax + ", commandLine=" + commandLine + "]";
+		return "Mower [position=" + position + ", xMax=" + xMax + ", yMax=" + yMax + ", commandLine=" + commandLine
+				+ "]";
 	}
 
 }
