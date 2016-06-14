@@ -35,8 +35,10 @@ public class MowItNow {
 			List<String> lines = FileUtils.readLines(input, Charset.defaultCharset());
 			// get area spaces
 			String[] posMax = lines.get(0).split(" ");
-			System.out.println("======X Max: " + posMax[0]);
-			System.out.println("======Y Max: " + posMax[1]);
+			int xMax = Integer.parseInt(posMax[0]);
+			int yMax = Integer.parseInt(posMax[1]);
+			System.out.println("======X Max: " + xMax);
+			System.out.println("======Y Max: " + yMax);
 			List<Position> startPositions = new ArrayList<Position>();
 			// instantiate mowers
 			List<Mower> mowers = new ArrayList<>();
@@ -52,7 +54,7 @@ public class MowItNow {
 					String cap = pos[2];
 					Position startPosition = new Position(x, y, cap);
 					startPositions.add(startPosition);
-					Mower mower = new Mower(startPosition, x, y, commandLine);
+					Mower mower = new Mower(startPosition, xMax, yMax, commandLine);
 					mowers.add(mower);
 				} else {
 					// Odd index
@@ -71,6 +73,7 @@ public class MowItNow {
 
 		} catch (IOException e) {
 			e.printStackTrace(System.err);
+			System.exit(-1);
 		}
 	}
 
