@@ -25,13 +25,17 @@ public class MowItNow {
 	private static String INPUT_FILE = "input.txt";
 
 	public static void main(String[] args) {
+		// check if input file passed in arguments
+		if (args.length > 0) {
+			INPUT_FILE = args[0];
+		}
+		URL url = MowItNow.class.getClassLoader().getResource(INPUT_FILE);
+		File input = new File(url.getFile());
+		mowFromInputFile(input);
+	}
+
+	public static void mowFromInputFile(File input) {
 		try {
-			// check if input file passed in arguments
-			if (args.length > 0) {
-				INPUT_FILE = args[0];
-			}
-			URL url = MowItNow.class.getClassLoader().getResource(INPUT_FILE);
-			File input = new File(url.getFile());
 			List<String> lines = FileUtils.readLines(input, Charset.defaultCharset());
 			// get area spaces
 			String[] posMax = lines.get(0).split(" ");
@@ -39,7 +43,6 @@ public class MowItNow {
 			int yMax = Integer.parseInt(posMax[1]);
 			System.out.println("======X Max: " + xMax);
 			System.out.println("======Y Max: " + yMax);
-			List<Position> startPositions = new ArrayList<Position>();
 			// instantiate mowers
 			List<Mower> mowers = new ArrayList<>();
 
@@ -53,7 +56,6 @@ public class MowItNow {
 					int y = Integer.parseInt(pos[1]);
 					String cap = pos[2];
 					Position startPosition = new Position(x, y, cap);
-					startPositions.add(startPosition);
 					Mower mower = new Mower(startPosition, xMax, yMax, commandLine);
 					mowers.add(mower);
 				} else {
@@ -77,4 +79,24 @@ public class MowItNow {
 		}
 	}
 
+	
+	public Position mow(String xyMax,String startPosition,String commandLine) throws MowException{
+		assert xyMax!=null;
+		assert startPosition!=null;
+		assert commandLine!=null;
+		
+		//x,y Max
+		String[] posMax = xyMax.split(" ");
+		int xMax = Integer.parseInt(posMax[0]);
+		int yMax = Integer.parseInt(posMax[1]);
+		//start position
+		String[] pos = startPosition.split(" ");
+		int x = Integer.parseInt(pos[0]);
+		int y = Integer.parseInt(pos[1]);
+		String cap = pos[2];
+		Position sPosition = new Position(x, y, cap);
+		//mow
+		Mower mower = new Mower(sPosition, xMax, yMax, commandLine);
+		return mower.mow();
+	}
 }
